@@ -47,13 +47,13 @@ const PETITIONS = [
     thumb: "pic/amnesty.jpg"
   },
   {
-    source: "Petition",
+    source: "Change.org",
     date: "Jan 2026",
     title: "Sign the petition",
     desc: "Add your name and share.",
     url: "https://c.org/6rRThJkrQB",
     tags: ["Petition", "Action"],
-    thumb: "pic/amnesty.jpg"
+    thumb: "pic/change.jpg"
   }
 ];
 
