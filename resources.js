@@ -1,183 +1,93 @@
-// resources.js (FINAL - no more “Generating preview…”)
-//
-// Required local files:
-// - pic/background.jpg
-// - pic/reuters.jpg
-// - pic/abc.jpg
-// - pic/amnesty.jpg
+"use strict";
 
-// --------------------
-// DATA
-// --------------------
-
-const PETITIONS = [
+const COVERAGE = [
   {
-    title: "Amnesty: Iran — massacre of protesters demands global diplomatic action",
-    url: "https://www.amnesty.org/en/latest/news/2026/01/iran-massacre-of-protesters-demands-global-diplomatic-action-to-signal-an-end-to-impunity/?utm_source=chatgpt.com",
-    org: "Amnesty International",
-    desc: "Call for accountability and diplomatic action in response to reported killings."
-  }
-];
-
-const LINKS = [
-  {
-    title: "ABC News (AU): UN urged to investigate Iran deaths as possible crimes against humanity",
-    url: "https://www.abc.net.au/news/2026-01-20/united-nations-iran-deaths-investigation-crimes-against-humanity/106238634?utm_source=chatgpt.com",
     source: "ABC News (Australia)",
     date: "Jan 20, 2026",
+    title: "ABC News (AU): UN urged to investigate Iran deaths as possible crimes against humanity",
     desc: "Report on UN calls and investigation demands linked to deaths during protests.",
+    url: "https://www.abc.net.au/news/2026-01-20/united-nations-iran-deaths-investigation-crimes-against-humanity/106238634",
     tags: ["UN", "Human rights"],
     thumb: "pic/abc.jpg"
   },
   {
-    title: "Reuters: Verified deaths in Iran protests reach at least 5,000, official says",
-    url: "https://www.reuters.com/business/media-telecom/iranian-official-says-verified-deaths-iran-protests-reaches-least-5000-2026-01-18/",
     source: "Reuters",
     date: "Jan 18, 2026",
+    title: "Reuters: Verified deaths in Iran protests reach at least 5,000, official says",
     desc: "Official statement and reporting on verified death toll claims during protests.",
+    url: "https://www.reuters.com/business/media-telecom/iranian-official-says-verified-deaths-iran-protests-reaches-least-5000-2026-01-18/",
     tags: ["Deaths", "Reporting"],
     thumb: "pic/reuters.jpg"
-  },
-  {
-    title: "Amnesty: Internet shutdown hides rights violations",
-    url: "https://www.amnesty.org/en/latest/news/2026/01/internet-shutdown-in-iran-hides-violations-in-escalating-protests/?utm_source=chatgpt.com",
-    source: "Amnesty",
-    date: "Jan 2026",
-    desc: "How shutdowns limit documentation and reporting.",
-    tags: ["Internet outage", "Shutdown", "Human rights"],
-    thumb: "pic/amnesty.jpg"
   }
 ];
 
 const INSTAGRAM = [
   {
-    title: "Instagram Reel: On-the-ground footage",
-    url: "https://www.instagram.com/reel/DTk5CLMjyim/",
     source: "Instagram",
-    desc: "Public reel embedded from Instagram."
+    title: "On-the-ground reel",
+    desc: "Shared for awareness and updates.",
+    url: "https://www.instagram.com/reel/DTk5CLMjyim/"
   },
   {
-    title: "Instagram Reel: On-the-ground footage",
-    url: "https://www.instagram.com/reel/DTTA0i4Erj9/?igsh=MWFpa3RsM2Rla3FsNA==",
     source: "Instagram",
-    desc: "Public reel embedded from Instagram."
+    title: "On-the-ground reel",
+    desc: "Shared for awareness and updates.",
+    url: "https://www.instagram.com/reel/DTTA0i4Erj9/"
   }
 ];
 
-// --------------------
-// DOM
-// --------------------
+const PETITIONS = [
+  {
+    source: "Amnesty International",
+    date: "Jan 2026",
+    title: "Amnesty: Iran — massacre of protesters demands global diplomatic action",
+    desc: "Call for accountability and diplomatic action in response to reported killings.",
+    url: "https://www.amnesty.org/en/latest/news/2026/01/iran-massacre-of-protesters-demands-global-diplomatic-action-to-signal-an-end-to-impunity/",
+    tags: ["Petition", "Action"],
+    thumb: "pic/amnesty.jpg"
+  },
+  {
+    source: "Petition",
+    date: "Jan 2026",
+    title: "Sign the petition",
+    desc: "Add your name and share.",
+    url: "https://c.org/6rRThJkrQB",
+    tags: ["Petition", "Action"],
+    thumb: "pic/amnesty.jpg"
+  }
+];
 
-const grid = document.getElementById("grid");
-const petitionsGrid = document.getElementById("petitions");
-const instagramGrid = document.getElementById("instagram");
-const search = document.getElementById("search");
-const chips = document.getElementById("chips");
+// ---------- Helpers ----------
+function $(id){ return document.getElementById(id); }
 
-let activeTag = "All";
-
-// --------------------
-// HELPERS
-// --------------------
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({
-    "&":"&amp;",
-    "<":"&lt;",
-    ">":"&gt;",
-    "\"":"&quot;",
-    "'":"&#39;"
-  }[c]));
+function escapeHtml(str){
+  return String(str ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 }
 
-function escapeAttr(s) {
-  return escapeHtml(s).replace(/`/g, "&#96;");
+function escapeAttr(str){
+  return escapeHtml(str).replaceAll("`","&#096;");
 }
 
-function matches(item, q) {
-  const text = `${item.title} ${item.source} ${(item.desc || "")} ${(item.tags || []).join(" ")}`.toLowerCase();
-  return text.includes(q.toLowerCase());
+function norm(str){
+  return String(str ?? "").toLowerCase().trim();
 }
 
-function allTags() {
-  const s = new Set();
-  LINKS.forEach(x => (x.tags || []).forEach(t => s.add(t)));
-  return ["All", ...Array.from(s).sort((a,b)=>a.localeCompare(b))];
+function openUrl(url){
+  window.open(url, "_blank", "noopener,noreferrer");
 }
 
-// --------------------
-// PETITION REMINDER (TOP)
-// --------------------
-
-function insertPetitionReminder() {
-  if (!PETITIONS.length || !grid || !grid.parentNode) return;
-  if (document.getElementById("petitionReminder")) return;
-
-  const p = PETITIONS[0];
-
-  const banner = document.createElement("div");
-  banner.id = "petitionReminder";
-  banner.style.cssText = `
-    margin: 16px 0 10px;
-    padding: 14px;
-    border-radius: 16px;
-    border: 1px solid rgba(124,92,255,.55);
-    background: rgba(124,92,255,.14);
-    backdrop-filter: blur(6px);
-  `;
-
-  banner.innerHTML = `
-    <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
-      <div>
-        <div style="font-weight:900; letter-spacing:-0.02em;">Reminder: Sign the petition</div>
-        <div style="margin-top:6px; color: rgba(255,255,255,.70); line-height:1.4;">
-          ${escapeHtml(p.title)}
-        </div>
-      </div>
-      <a class="petition-cta" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">
-        Open petition
-      </a>
-    </div>
-  `;
-
-  grid.parentNode.insertBefore(banner, grid);
-}
-
-// --------------------
-// CHIPS
-// --------------------
-
-function renderChips() {
-  if (!chips) return;
-
-  chips.innerHTML = "";
-  allTags().forEach(tag => {
-    const el = document.createElement("div");
-    el.className = "chip" + (tag === activeTag ? " active" : "");
-    el.textContent = tag;
-    el.onclick = () => {
-      activeTag = tag;
-      renderArticles();
-      renderChips();
-    };
-    chips.appendChild(el);
-  });
-}
-
-// --------------------
-// ARTICLES
-// --------------------
-
-function articleCardHtml(x, idx) {
-  const tags = (x.tags || []).slice(0, 4).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+function cardHtml(x){
+  const tags = (x.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+  const thumb = x.thumb ? `<img class="thumb" src="${escapeAttr(x.thumb)}" alt="">` : "";
 
   return `
-    <a class="card" href="${escapeAttr(x.url)}" target="_blank" rel="noopener noreferrer">
-      <div class="thumb-wrap" data-idx="${idx}">
-        <div class="skeleton" aria-hidden="true"></div>
-        <img class="thumb" data-role="thumb" alt="" loading="lazy" />
-      </div>
-
+    <article class="card" role="button" tabindex="0" data-url="${escapeAttr(x.url)}">
+      ${thumb}
       <div class="card-body">
         <div class="kicker">
           <span>${escapeHtml(x.source || "")}</span>
@@ -187,171 +97,183 @@ function articleCardHtml(x, idx) {
         <p class="desc">${escapeHtml(x.desc || "")}</p>
         <div class="tags">${tags}</div>
       </div>
-    </a>
+    </article>
   `;
 }
 
-function hydrateThumbs(items) {
-  const wraps = document.querySelectorAll(".thumb-wrap");
+function petitionCardHtml(x){
+  const tags = (x.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+  const thumb = x.thumb ? `<img class="thumb" src="${escapeAttr(x.thumb)}" alt="">` : "";
 
-  wraps.forEach((w) => {
-    const idx = Number(w.getAttribute("data-idx"));
-    const x = items[idx];
-    const img = w.querySelector('img[data-role="thumb"]');
-    const skeleton = w.querySelector(".skeleton");
-
-    if (!img || !x) return;
-
-    // No remote screenshots. Only local thumbs.
-    const src = x.thumb || "";
-
-    if (!src) {
-      w.remove();
-      return;
-    }
-
-    img.classList.remove("loaded");
-    img.src = src;
-
-    img.onload = () => {
-      img.classList.add("loaded");
-      if (skeleton) skeleton.style.display = "none";
-    };
-
-    img.onerror = () => {
-      w.remove();
-    };
-  });
-}
-
-function renderArticles() {
-  if (!grid) return;
-
-  const q = (search && search.value ? search.value : "").trim();
-
-  const filtered = LINKS
-    .map(x => ({ ...x }))
-    .filter(x => {
-      const tagOk = activeTag === "All" || (x.tags || []).includes(activeTag);
-      const qOk = !q || matches(x, q);
-      return tagOk && qOk;
-    });
-
-  grid.innerHTML = filtered.map((x, idx) => articleCardHtml(x, idx)).join("");
-
-  if (filtered.length === 0) {
-    grid.innerHTML = `
-      <div style="color:rgba(255,255,255,.7); padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05);">
-        No matches. Try a different search or tag.
-      </div>
-    `;
-    return;
-  }
-
-  hydrateThumbs(filtered);
-}
-
-// --------------------
-// INSTAGRAM (official embed)
-// --------------------
-
-function instagramCardHtml(x) {
   return `
-    <div class="card">
+    <article class="card">
+      ${thumb}
+      <div class="card-body">
+        <div class="kicker">
+          <span>${escapeHtml(x.source || "")}</span>
+          <span>${escapeHtml(x.date || "")}</span>
+        </div>
+        <div class="h">${escapeHtml(x.title || "")}</div>
+        <p class="desc">${escapeHtml(x.desc || "")}</p>
+        <div class="tags">${tags}</div>
+
+        <div class="card-actions">
+          <a class="linkbtn" href="${escapeAttr(x.url)}" target="_blank" rel="noopener noreferrer">Open petition</a>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function instagramCardHtml(x){
+  return `
+    <article class="card">
       <div class="card-body">
         <div class="kicker">
           <span>${escapeHtml(x.source || "Instagram")}</span>
           <span>Reel</span>
         </div>
-
         <div class="h">${escapeHtml(x.title || "Instagram Reel")}</div>
         <p class="desc">${escapeHtml(x.desc || "Embedded from Instagram.")}</p>
 
+        <a class="linkbtn" href="${escapeAttr(x.url)}" target="_blank" rel="noopener noreferrer">
+          Open on Instagram
+        </a>
+
         <div class="instagram-embed-wrap">
-          <blockquote
-            class="instagram-media"
+          <blockquote class="instagram-media"
             data-instgrm-permalink="${escapeAttr(x.url)}"
             data-instgrm-version="14">
           </blockquote>
         </div>
-
-        <a class="petition-cta" style="margin-top:12px; width:100%;"
-           href="${escapeAttr(x.url)}" target="_blank" rel="noopener noreferrer">
-          Open on Instagram
-        </a>
       </div>
-    </div>
+    </article>
   `;
 }
 
-function renderInstagram() {
-  if (!instagramGrid) return;
+// ---------- State ----------
+const searchEl = $("search");
+const chipsEl = $("chips");
+const gridEl = $("grid");
+const instagramEl = $("instagram");
+const petitionsEl = $("petitions");
 
-  if (!INSTAGRAM.length) {
-    instagramGrid.innerHTML = `
-      <div style="color:rgba(255,255,255,.7); padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05);">
+let activeTag = "All";
+let query = "";
+
+// ---------- Chips ----------
+function computeTags(){
+  const set = new Set();
+  for (const x of COVERAGE){
+    for (const t of (x.tags || [])) set.add(t);
+  }
+  return ["All", ...Array.from(set).sort((a,b)=>a.localeCompare(b))];
+}
+
+function renderChips(){
+  const tags = computeTags();
+  chipsEl.innerHTML = tags.map(t => {
+    const active = t === activeTag ? "active" : "";
+    return `<span class="chip ${active}" data-tag="${escapeAttr(t)}">${escapeHtml(t)}</span>`;
+  }).join("");
+}
+
+// ---------- Coverage rendering ----------
+function matches(x){
+  const q = norm(query);
+  const hay = norm([
+    x.source, x.title, x.desc, (x.tags || []).join(" ")
+  ].join(" "));
+
+  const tagOk = (activeTag === "All") || (x.tags || []).includes(activeTag);
+  const qOk = !q || hay.includes(q);
+  return tagOk && qOk;
+}
+
+function renderCoverage(){
+  const items = COVERAGE.filter(matches);
+  if (!items.length){
+    gridEl.innerHTML = `
+      <div style="grid-column: span 12; padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05); color:rgba(255,255,255,.72);">
+        No results. Try a different keyword or clear filters.
+      </div>
+    `;
+    return;
+  }
+  gridEl.innerHTML = items.map(cardHtml).join("");
+}
+
+// ---------- Instagram ----------
+function renderInstagram(){
+  if (!INSTAGRAM.length){
+    instagramEl.innerHTML = `
+      <div style="grid-column: span 12; padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05); color:rgba(255,255,255,.72);">
         Instagram links will be added here.
       </div>
     `;
     return;
   }
 
-  instagramGrid.innerHTML = INSTAGRAM.map(x => instagramCardHtml(x)).join("");
+  instagramEl.innerHTML = INSTAGRAM.map(instagramCardHtml).join("");
 
-  if (window.instgrm && window.instgrm.Embeds && window.instgrm.Embeds.process) {
+  if (window.instgrm && window.instgrm.Embeds && window.instgrm.Embeds.process){
     window.instgrm.Embeds.process();
-  } else {
-    setTimeout(() => {
-      if (window.instgrm && window.instgrm.Embeds && window.instgrm.Embeds.process) {
-        window.instgrm.Embeds.process();
-      }
-    }, 800);
   }
 }
 
-// --------------------
-// PETITIONS
-// --------------------
-
-function petitionCardHtml(p) {
-  return `
-    <a class="card" href="${escapeAttr(p.url)}" target="_blank" rel="noopener noreferrer">
-      <div class="card-body">
-        <div class="kicker">
-          <span>${escapeHtml(p.org || "Petition")}</span>
-          <span></span>
-        </div>
-        <div class="h">${escapeHtml(p.title || "")}</div>
-        <p class="desc">${escapeHtml(p.desc || "")}</p>
-        <div class="petition-btn">Open petition</div>
-      </div>
-    </a>
-  `;
-}
-
-function renderPetitions() {
-  if (!petitionsGrid) return;
-
-  if (!PETITIONS.length) {
-    petitionsGrid.innerHTML = `
-      <div style="color:rgba(255,255,255,.7); padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05);">
-        Petitions will be added here.
+// ---------- Petitions ----------
+function renderPetitions(){
+  if (!PETITIONS.length){
+    petitionsEl.innerHTML = `
+      <div style="grid-column: span 12; padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:16px; background:rgba(255,255,255,.05); color:rgba(255,255,255,.72);">
+        No petitions added yet.
       </div>
     `;
     return;
   }
-
-  petitionsGrid.innerHTML = PETITIONS.map(p => petitionCardHtml(p)).join("");
+  petitionsEl.innerHTML = PETITIONS.map(petitionCardHtml).join("");
 }
 
-// --------------------
-// INIT
-// --------------------
+// ---------- Events ----------
+document.addEventListener("click", (e) => {
+  const chip = e.target.closest(".chip");
+  if (chip){
+    activeTag = chip.getAttribute("data-tag") || "All";
+    renderChips();
+    renderCoverage();
+    return;
+  }
 
-if (search) search.addEventListener("input", renderArticles);
+  const card = e.target.closest(".card[data-url]");
+  if (card){
+    const url = card.getAttribute("data-url");
+    if (url) openUrl(url);
+    return;
+  }
 
-insertPetitionReminder();
+  const jump = e.target.closest('a[href="#petitions-section"]');
+  if (jump){
+    e.preventDefault();
+    document.querySelector("#petitions-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter") return;
+  const card = document.activeElement?.closest?.(".card[data-url]");
+  if (!card) return;
+  const url = card.getAttribute("data-url");
+  if (url) openUrl(url);
+});
+
+searchEl?.addEventListener("input", () => {
+  query = searchEl.value || "";
+  renderCoverage();
+});
+
+// ---------- Init ----------
 renderChips();
-renderArticles();
+renderCoverage();
 renderInstagram();
 renderPetitions();
