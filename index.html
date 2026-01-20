@@ -1,29 +1,30 @@
-<!-- index.html (FINAL with Instagram embeds) -->
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" type="image/png" href="pic/favicon.png">
-  <title>Iran: Recent Coverage + Internet Outages</title>
-  <meta name="description" content="Curated links about Iran protests, reported deaths, internet outages, and actions. Scan the QR to view sources." />
+  <meta name="color-scheme" content="dark" />
+
+  <title>All Eyes on Iran</title>
+
+  <link rel="icon" type="image/png" href="pic/reuters.jpg" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <header class="header">
-    <div class="wrap header-inner">
-      <div class="brand">
-        <div class="dot"></div>
-        <div>
-          <div class="title">Iran: Recent Events</div>
-          <div class="subtitle">Sources • last week to now</div>
-        </div>
-      </div>
+  <div class="bg" aria-hidden="true"></div>
 
-      <div class="header-actions">
-        <input id="search" class="search" type="search" placeholder="Search sources…" autocomplete="off" />
+  <header class="topbar">
+    <div class="brand">
+      <div class="dot"></div>
+      <div class="brand-text">
+        <div class="brand-title">All Eyes on Iran</div>
+        <div class="brand-sub">Curated coverage · past two weeks</div>
       </div>
+    </div>
+
+    <div class="search">
+      <input id="search" type="search" placeholder="Search sources..." autocomplete="off" />
     </div>
   </header>
 
@@ -31,42 +32,56 @@
     <section class="hero">
       <h1>All Eyes on Iran</h1>
       <p>
-      Verified reporting, on-the-ground footage, and actions from the past two weeks.
+        Verified reporting, on-the-ground footage, and actions from the past two weeks.
       </p>
       <div class="chips" id="chips"></div>
     </section>
 
-
     <section>
       <h2 class="section-title">Latest coverage</h2>
-      <!-- Petition reminder banner is injected above this grid by JS -->
+
+      <div class="petition-banner" id="petition-banner">
+        <div class="petition-banner-left">
+          <div class="petition-banner-title">Reminder: Sign the petitions</div>
+          <div class="petition-banner-desc">Tap to jump to the Take action section.</div>
+        </div>
+        <a class="btn" href="#petitions-section" id="jump-petitions">Go to petitions</a>
+      </div>
+
       <div class="grid" id="grid" aria-live="polite"></div>
     </section>
 
     <section>
       <h2 class="section-title">On-the-ground footage (Instagram)</h2>
       <p class="section-desc">
-        Some Instagram embeds may not load due to regional or platform restrictions.
-        Tap “Open on Instagram” to view the original post.
+        Some Instagram embeds may not load due to regional or platform restrictions. Tap “Open on Instagram” to view the original post.
       </p>
       <div class="grid" id="instagram"></div>
     </section>
 
-    <section class="petitions">
+    <section class="petitions" id="petitions-section">
       <h2 class="section-title">Take action</h2>
       <p class="section-desc">Verified petitions and calls for accountability.</p>
+
+      <p class="petition-alert">
+        IMPORTANT: Please sign and share the petitions below.
+      </p>
+
       <div class="grid" id="petitions"></div>
     </section>
 
     <footer class="footer">
-      <div>Tip: Tap any card to open the full link.</div>
-      <div class="muted">Built for an event QR hub.</div>
+      <div class="footer-line"></div>
+      <div class="footer-text">
+        Tip: Tap any card to open the full link.
+      </div>
+      <div class="footer-text">
+        Built for an event QR hub.
+      </div>
     </footer>
   </main>
 
   <script src="resources.js"></script>
-
-  <!-- Instagram official embed script (free; may be blocked on some networks) -->
   <script async src="https://www.instagram.com/embed.js"></script>
 </body>
 </html>
