@@ -49,8 +49,8 @@ const PETITIONS = [
   {
     source: "Change.org",
     date: "Jan 2026",
-    title: "Sign the petition",
-    desc: "Add your name and share.",
+    title: "Invoke the Responsibility to Protect (R2P) for Iran.",
+    desc: "Petition for the Immediate Activation of the Responsibility to Protect.",
     url: "https://c.org/6rRThJkrQB",
     tags: ["Petition", "Action"],
     thumb: "pic/change.jpg"
