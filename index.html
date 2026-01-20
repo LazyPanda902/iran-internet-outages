@@ -1,0 +1,69 @@
+<!-- index.html (FINAL with Instagram embeds) -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Iran: Recent Coverage + Internet Outages</title>
+  <meta name="description" content="Curated links about Iran protests, reported deaths, internet outages, and actions. Scan the QR to view sources." />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="wrap header-inner">
+      <div class="brand">
+        <div class="dot"></div>
+        <div>
+          <div class="title">Iran: Recent Events</div>
+          <div class="subtitle">Sources • last week to now</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <input id="search" class="search" type="search" placeholder="Search sources…" autocomplete="off" />
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Scan → open → choose a source</h1>
+      <p>
+        A QR-friendly hub for reporting, documentation, and actions. Mobile-first and easy to share at an event.
+      </p>
+      <div class="chips" id="chips"></div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Latest coverage</h2>
+      <!-- Petition reminder banner is injected above this grid by JS -->
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+
+    <section>
+      <h2 class="section-title">On-the-ground footage (Instagram)</h2>
+      <p class="section-desc">
+        Public reels embedded from Instagram. If an embed fails, tap “Open on Instagram”.
+      </p>
+      <div class="grid" id="instagram"></div>
+    </section>
+
+    <section class="petitions">
+      <h2 class="section-title">Take action</h2>
+      <p class="section-desc">Verified petitions and calls for accountability.</p>
+      <div class="grid" id="petitions"></div>
+    </section>
+
+    <footer class="footer">
+      <div>Tip: Tap any card to open the full link.</div>
+      <div class="muted">Built for an event QR hub.</div>
+    </footer>
+  </main>
+
+  <script src="resources.js"></script>
+
+  <!-- Instagram official embed script (free; may be blocked on some networks) -->
+  <script async src="https://www.instagram.com/embed.js"></script>
+</body>
+</html>

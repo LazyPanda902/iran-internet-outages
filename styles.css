@@ -1,0 +1,357 @@
+/* styles.css (FINAL with background image + Instagram embed fit) */
+
+:root{
+  --bg:#0b0f19;
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.68);
+  --line:rgba(255,255,255,.14);
+  --accent:#7c5cff;
+  --accent2:#37d6c5;
+  --radius:18px;
+  --max:1100px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text);
+
+  /* Background image + overlay for readability */
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(5,8,15,0.88),
+      rgba(5,8,15,0.75),
+      rgba(5,8,15,0.90)
+    ),
+    url("pic/background.jpg");
+
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+a{ color:inherit; text-decoration:none; }
+button,input{ font:inherit; }
+
+.wrap{
+  max-width:var(--max);
+  margin:0 auto;
+  padding:
+    0
+    max(16px, env(safe-area-inset-right))
+    0
+    max(16px, env(safe-area-inset-left));
+}
+
+/* Header */
+.header{
+  position:sticky;
+  top:0;
+  z-index:10;
+  backdrop-filter: blur(14px);
+  background: rgba(10,12,20,0.78);
+  border-bottom:1px solid var(--line);
+}
+
+.header-inner{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:14px 0 12px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  min-height:44px;
+}
+
+.dot{
+  width:14px;
+  height:14px;
+  border-radius:5px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  box-shadow:0 0 0 4px rgba(124,92,255,.18);
+}
+
+.title{
+  font-weight:900;
+  letter-spacing:-0.02em;
+  font-size:15px;
+}
+
+.subtitle{
+  color:var(--muted);
+  font-size:13px;
+  margin-top:2px;
+}
+
+.search{
+  width:100%;
+  min-height:44px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid var(--line);
+  background: rgba(0,0,0,.28);
+  color:var(--text);
+  outline:none;
+}
+
+.search:focus{
+  border-color: rgba(124,92,255,.7);
+  box-shadow:0 0 0 4px rgba(124,92,255,.18);
+}
+
+/* Hero */
+.hero{
+  padding:20px 0 10px;
+  backdrop-filter: blur(4px);
+}
+
+.hero h1{
+  margin:0;
+  font-size: clamp(20px, 5.5vw, 34px);
+  line-height:1.1;
+  letter-spacing:-0.03em;
+}
+
+.hero p{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size:15px;
+  line-height:1.55;
+}
+
+/* Chips */
+.chips{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:14px;
+  overflow-x:auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chip{
+  min-height:40px;
+  padding:10px 12px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  color:var(--muted);
+  font-size:13px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.chip.active{
+  color:var(--text);
+  border-color: rgba(124,92,255,.6);
+  background: rgba(124,92,255,.16);
+}
+
+/* Section titles */
+.section-title{
+  margin:26px 0 10px;
+  font-size:20px;
+  font-weight:850;
+  letter-spacing:-0.02em;
+}
+
+.section-desc{
+  margin:0 0 12px;
+  color:var(--muted);
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* Grid */
+.grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:12px;
+  padding:10px 0 26px;
+}
+
+/* Cards */
+.card{
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.06);
+  border-radius:var(--radius);
+  overflow:hidden;
+  backdrop-filter: blur(6px);
+  transition: transform .12s ease, background .12s ease;
+}
+
+.card:active{ transform: scale(.985); }
+
+@media (hover:hover){
+  .card:hover{
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.09);
+  }
+}
+
+/* Thumbnails */
+.thumb-wrap{
+  position:relative;
+  width:100%;
+  aspect-ratio:16/9;
+  background: rgba(255,255,255,.06);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+
+.thumb{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  opacity:0; /* hidden until JS adds .loaded */
+  transition: opacity .18s ease;
+}
+
+.thumb.loaded{ opacity:1; }
+
+.skeleton{
+  position:absolute;
+  inset:0;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,.05),
+    rgba(255,255,255,.12),
+    rgba(255,255,255,.05)
+  );
+  background-size:200% 100%;
+  animation: shimmer 1.2s linear infinite;
+}
+
+@keyframes shimmer{
+  from{ background-position:0 0; }
+  to{ background-position:-200% 0; }
+}
+
+/* Card content */
+.card-body{ padding:12px; }
+
+.kicker{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+.h{
+  margin:10px 0 8px;
+  font-weight:850;
+  font-size:16px;
+  letter-spacing:-0.02em;
+  line-height:1.25;
+}
+
+.desc{
+  margin:0;
+  font-size:14px;
+  color:var(--muted);
+  line-height:1.55;
+}
+
+.tags{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:10px;
+}
+
+.tag{
+  font-size:12px;
+  padding:7px 9px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background: rgba(255,255,255,.04);
+  color:var(--muted);
+}
+
+/* Petitions */
+.petitions .card{
+  border-color: rgba(124,92,255,.6);
+  background: rgba(124,92,255,.16);
+}
+
+.petition-btn{
+  margin-top:12px;
+  padding:12px;
+  text-align:center;
+  border-radius:14px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color:#0a0c12;
+  font-weight:900;
+  min-height:44px;
+}
+
+/* Petition reminder banner button */
+.petition-cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:44px;
+  padding:12px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.10);
+  color: rgba(255,255,255,.92);
+  font-weight:900;
+}
+
+.petition-cta:active{ transform: scale(.98); }
+
+/* Instagram embed fit */
+.instagram-embed-wrap{
+  margin-top:12px;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+}
+
+/* Make Instagram blockquote behave nicely inside cards */
+.instagram-media{
+  margin:0 !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:100% !important;
+}
+
+/* Footer */
+.footer{
+  border-top:1px solid var(--line);
+  padding:18px 0 26px;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+.muted{ color:var(--muted); }
+
+/* Responsive */
+@media (min-width:680px){
+  .header-inner{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .search{ width:min(420px, 45vw); }
+  .grid{ grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width:980px){
+  .grid{ grid-template-columns: repeat(3, 1fr); }
+}
