@@ -53,7 +53,7 @@ const PETITIONS = [
     desc: "Add your name and share.",
     url: "https://c.org/6rRThJkrQB",
     tags: ["Petition", "Action"],
-    thumb: "pic/"
+    thumb: "pic/change.jpg"
   }
 ];
 
